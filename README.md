@@ -255,6 +255,4 @@ MIT © 2026 [Tu Nombre](https://github.com/tuusuario)
 
 ---
 
-<div align="center">
-  <sub>Hecho con ❤️ para Colombia</sub>
-</div>
+
