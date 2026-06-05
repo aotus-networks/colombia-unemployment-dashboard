@@ -1,0 +1,135 @@
+/* ==========================================================================
+   Estilos personalizados - Mapa de Desempleo en Colombia
+   ========================================================================== */
+
+/* --- KPIs --- */
+.kpi-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.kpi-card {
+    background: var(--secondary-background-color);
+    border-radius: 12px;
+    padding: 1.2rem 1.5rem;
+    text-align: center;
+    min-width: 150px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.kpi-label {
+    font-size: 0.85rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.3rem;
+}
+
+.kpi-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+.kpi-delta-positive {
+    color: #28a745;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.kpi-delta-negative {
+    color: #dc3545;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* --- Map tooltip --- */
+.map-tooltip {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-radius: 8px !important;
+    padding: 10px 14px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    font-family: var(--font) !important;
+}
+
+/* --- Ranking table --- */
+.ranking-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 4px;
+}
+
+.ranking-table td {
+    padding: 8px 12px;
+    border-radius: 6px;
+}
+
+.ranking-table .rank-high {
+    background: rgba(227, 26, 28, 0.1);
+}
+
+.ranking-table .rank-low {
+    background: rgba(27, 158, 119, 0.1);
+}
+
+/* --- Slider año --- */
+.year-display {
+    font-size: 3rem;
+    font-weight: 800;
+    text-align: center;
+    color: var(--primary-color);
+    margin: 0;
+    letter-spacing: -1px;
+}
+
+/* --- Sección de metodología --- */
+.metadata-box {
+    background: var(--secondary-background-color);
+    border-left: 4px solid var(--primary-color);
+    border-radius: 0 8px 8px 0;
+    padding: 1rem 1.5rem;
+    margin: 1rem 0;
+}
+
+/* --- Footer --- */
+.footer {
+    text-align: center;
+    padding: 2rem 0;
+    color: #6c757d;
+    font-size: 0.85rem;
+    border-top: 1px solid var(--secondary-background-color);
+    margin-top: 3rem;
+}
+
+.footer a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+    .kpi-container {
+        gap: 0.5rem;
+    }
+
+    .kpi-card {
+        min-width: 120px;
+        padding: 0.8rem 1rem;
+    }
+
+    .kpi-value {
+        font-size: 1.5rem;
+    }
+
+    .year-display {
+        font-size: 2rem;
+    }
+}

@@ -1,0 +1,131 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "colombia-unemployment-dashboard"
+version = "0.1.0"
+description = "Dashboard interactivo de desempleo en Colombia por departamento y municipio"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Tu Nombre", email = "tu@email.com"}
+]
+keywords = ["colombia", "unemployment", "dashboard", "streamlit", "geopandas", "plotly", "dane"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Visualization",
+]
+
+requires-python = ">=3.11"
+
+dependencies = [
+    # Core
+    "streamlit>=1.31.0",
+    "pandas>=2.2.0",
+    "polars>=0.20.0",
+    "numpy>=1.26.0",
+
+    # Geoespacial
+    "geopandas>=0.14.0",
+    "shapely>=2.0.0",
+    "pyproj>=3.6.0",
+    "topojson>=1.6",
+    "mapclassify>=2.6.0",
+
+    # Visualización
+    "plotly>=5.18.0",
+    "matplotlib>=3.8.0",
+    "seaborn>=0.13.0",
+
+    # Datos y ETL
+    "openpyxl>=3.1.0",
+    "xlrd>=2.0.0",
+    "pyarrow>=15.0.0",
+    "fastparquet>=2024.0.0",
+
+    # Validación
+    "pandera>=0.18.0",
+
+    # Estadística
+    "statsmodels>=0.14.0",
+    "scipy>=1.12.0",
+
+    # HTTP y APIs
+    "httpx>=0.26.0",
+    "requests>=2.31.0",
+    "sodapy>=2.2.0",          # Socrata API client
+    "tenacity>=8.2.0",         # Retry logic
+
+    # Utilidades
+    "python-dotenv>=1.0.0",
+    "pydantic>=2.5.0",
+    "click>=8.1.0",
+    "tqdm>=4.66.0",
+    "diskcache>=5.6.0",
+    "loguru>=0.7.0",
+    "rich>=13.0.0",
+
+    # Export
+    "kaleido>=0.2.0",          # Export Plotly to PNG
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=4.1.0",
+    "pytest-mock>=3.12.0",
+    "mypy>=1.8.0",
+    "ruff>=0.3.0",
+    "pre-commit>=3.6.0",
+    "ipykernel>=6.29.0",
+    "jupyter>=1.0.0",
+    "nbformat>=5.9.0",
+]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "N",   # pep8-naming
+    "B",   # flake8-bugbear
+    "SIM", # flake8-simplify
+    "UP",  # pyupgrade
+]
+ignore = ["E501"]  # line too long handled by formatter
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+exclude = ["notebooks/", "tests/"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+addopts = "-v --cov=src --cov-report=term-missing --tb=short"
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
