@@ -21,7 +21,7 @@ from src.utils.paths import DEPARTMENT_PARQUET, PROCESSED_DIR
 # URL pública del GeoJSON de departamentos de Colombia
 # Fuente: repositorio público de datos geoespaciales de Colombia
 GEOJSON_URL = (
-    "https://raw.githubusercontent.com/danielcs88/colombia/master/datos/colombia.geo.json"
+    "https://gist.githubusercontent.com/john-guerra/43c7656821069d00dcbc/raw/be6a6e239cd5b5b803c6e7c2ec405b793a9064dd/Colombia.geo.json"
 )
 
 
