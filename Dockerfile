@@ -1,6 +1,6 @@
 FROM python:3.12-slim
 
-LABEL maintainer="Tu Nombre <tu@email.com>"
+LABEL maintainer="Saúl Esteban Cuellar & Santiago Giraldo Rico"
 LABEL description="Dashboard interactivo de desempleo en Colombia"
 
 # Variables de entorno
