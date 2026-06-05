@@ -588,7 +588,8 @@ elif view == ":books: Metodología":
 
 # ─── Footer ───────────────────────────────────────────────────────────────────
 st.markdown("""<div class="footer">
-    Dashboard de Desempleo en Colombia v0.1.0 |
-    Datos: DANE GEIH (calibrados) |
+    Dashboard de Desempleo en Colombia |
+    Datos: DANE GEIH |
+    Saúl Cuellar & Santiago Giraldo |
     Desarrollado con Streamlit + Plotly + GeoPandas
 </div>""", unsafe_allow_html=True)
