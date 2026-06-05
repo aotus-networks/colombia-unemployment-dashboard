@@ -28,12 +28,12 @@ ENV/
 .env.local
 .env.production
 
-# Data (except samples)
+# Data (except geo and samples)
 data/raw/
 data/processed/
-data/geo/
 
-# But keep sample data and READMEs
+# But keep geo data, samples and READMEs
+!data/geo/
 !data/**/README.md
 !data/**/.gitkeep
 
