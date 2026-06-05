@@ -42,18 +42,6 @@ class UnemploymentSchema(pa.DataFrameModel):
 
 
 def validate_data(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Valida el DataFrame contra el esquema definido.
-
-    Args:
-        df: DataFrame con datos de desempleo.
-
-    Returns:
-        DataFrame validado.
-
-    Raises:
-        pandera.errors.SchemaError: Si la validación falla.
-    """
     logger.info("Validando datos con Pandera...")
     try:
         validated = UnemploymentSchema.validate(df)
@@ -65,32 +53,18 @@ def validate_data(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def add_derived_columns(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Agrega columnas derivadas útiles para análisis.
-
-    Args:
-        df: DataFrame con datos base.
-
-    Returns:
-        DataFrame con columnas adicionales.
-    """
     df = df.copy()
 
-    # Fecha como string YYYY-MM
     df["periodo"] = df.apply(
         lambda r: f"{int(r['año'])}-{int(r['mes']):02d}", axis=1
     )
-
-    # Año-mes como entero para ordenamiento (202601, 202602, ...)
     df["periodo_int"] = df["año"] * 100 + df["mes"]
 
-    # Variación interanual (mismo mes, año anterior)
     df = df.sort_values(["departamento", "año", "mes"])
     df["td_var_interanual"] = df.groupby(["departamento", "mes"])[
         "tasa_desempleo"
     ].diff()
 
-    # Ranking dentro del mismo período
     df["rank_nacional"] = df.groupby(["año", "mes"])[
         "tasa_desempleo"
     ].rank(ascending=False, method="min")
@@ -99,19 +73,8 @@ def add_derived_columns(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def prepare_for_map(df: pd.DataFrame, geo_df: "gpd.GeoDataFrame") -> "gpd.GeoDataFrame":
-    """
-    Une datos de desempleo con geometrías para visualización en mapa.
-
-    Args:
-        df: DataFrame con datos de desempleo (debe tener 'departamento').
-        geo_df: GeoDataFrame con geometrías (debe tener nombre de departamento).
-
-    Returns:
-        GeoDataFrame con datos y geometrías unidos.
-    """
     import geopandas as gpd
 
-    # Normalizar nombres para el join
     geo_df = geo_df.copy()
 
     # Detectar columna de nombre en el GeoJSON
@@ -126,10 +89,10 @@ def prepare_for_map(df: pd.DataFrame, geo_df: "gpd.GeoDataFrame") -> "gpd.GeoDat
             f"No se encontró columna de nombre en GeoDataFrame. Columnas: {geo_df.columns.tolist()}"
         )
 
-    # Remover acentos y caracteres especiales (normalizar a ASCII)
-    # U+FFFD es el replacement character que aparece con encoding issues
+    # Remover caracteres especiales
     geo_df[name_col] = geo_df[name_col].str.replace("\ufffd", "", regex=False)
-    # Mapeo de caracteres acentuados a ASCII
+
+    # Mapeo de acentos a ASCII
     accent_map = {
         "Á": "A", "À": "A", "Ä": "A", "Â": "A", "Ã": "A",
         "É": "E", "È": "E", "Ë": "E", "Ê": "E",
@@ -141,10 +104,9 @@ def prepare_for_map(df: pd.DataFrame, geo_df: "gpd.GeoDataFrame") -> "gpd.GeoDat
     for accented, plain in accent_map.items():
         geo_df[name_col] = geo_df[name_col].str.replace(accented, plain, regex=False)
 
-    # Renombrar para el join
     geo_df = geo_df.rename(columns={name_col: "departamento_geo"})
 
-    # Normalizar nombres: uppercase, sin comas, sin puntos, trim
+    # Normalizar: uppercase, sin puntos ni comas
     geo_df["departamento_geo"] = (
         geo_df["departamento_geo"]
         .str.upper()
@@ -153,17 +115,18 @@ def prepare_for_map(df: pd.DataFrame, geo_df: "gpd.GeoDataFrame") -> "gpd.GeoDat
         .str.strip()
     )
 
-    # Corregir nombres específicos (ambas fuentes a un formato común SIN puntos ni comas)
+    # Correcciones de nombres del GeoJSON al formato de los datos sintéticos
     geo_corrections = {
-        "BOGOTA DC": "BOGOTA DC",
+        "SANTAFE DE BOGOTA DC": "BOGOTA DC",
         "BOGOTA D C": "BOGOTA DC",
+        "BOGOTA DC": "BOGOTA DC",
         "ARCHIPIELAGO DE SAN ANDRES PROVIDENCIA Y SANTA CATALINA": "SAN ANDRES",
         "SAN ANDRES Y PROVIDENCIA": "SAN ANDRES",
     }
     for wrong, correct in geo_corrections.items():
         geo_df.loc[geo_df["departamento_geo"] == wrong, "departamento_geo"] = correct
 
-    # Normalizar nombres en los datos también
+    # Normalizar nombres en los datos
     df = df.copy()
     df["departamento_join"] = (
         df["departamento"]
@@ -173,7 +136,14 @@ def prepare_for_map(df: pd.DataFrame, geo_df: "gpd.GeoDataFrame") -> "gpd.GeoDat
         .str.strip()
     )
 
-    # Join por la columna normalizada
+    # Correcciones en los datos sintéticos para que coincidan con el GeoJSON
+    data_corrections = {
+        "BOGOTA DC": "BOGOTA DC",
+    }
+    for wrong, correct in data_corrections.items():
+        df.loc[df["departamento_join"] == wrong, "departamento_join"] = correct
+
+    # Join
     merged = geo_df.merge(df, left_on="departamento_geo", right_on="departamento_join", how="left")
 
     logger.info(
