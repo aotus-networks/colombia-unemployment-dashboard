@@ -40,6 +40,43 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# Coordenadas centrales por departamento para zoom
+DEPTO_COORDS = {
+    "AMAZONAS": {"lat": -1.5, "lon": -71.5, "zoom": 6.0},
+    "ANTIOQUIA": {"lat": 7.0, "lon": -75.5, "zoom": 7.0},
+    "ARAUCA": {"lat": 6.5, "lon": -70.7, "zoom": 7.5},
+    "ATLANTICO": {"lat": 10.7, "lon": -74.9, "zoom": 9.0},
+    "BOLIVAR": {"lat": 8.5, "lon": -74.5, "zoom": 7.5},
+    "BOYACA": {"lat": 5.5, "lon": -72.7, "zoom": 7.5},
+    "CALDAS": {"lat": 5.3, "lon": -75.3, "zoom": 8.5},
+    "CAQUETA": {"lat": 0.9, "lon": -74.0, "zoom": 7.0},
+    "CASANARE": {"lat": 5.5, "lon": -71.5, "zoom": 7.5},
+    "CAUCA": {"lat": 2.5, "lon": -76.5, "zoom": 7.5},
+    "CESAR": {"lat": 9.5, "lon": -73.5, "zoom": 7.5},
+    "CHOCO": {"lat": 5.5, "lon": -76.8, "zoom": 7.0},
+    "CORDOBA": {"lat": 8.3, "lon": -75.7, "zoom": 7.5},
+    "CUNDINAMARCA": {"lat": 4.8, "lon": -74.3, "zoom": 8.0},
+    "GUAINIA": {"lat": 2.5, "lon": -68.5, "zoom": 6.5},
+    "GUAVIARE": {"lat": 2.0, "lon": -72.5, "zoom": 7.0},
+    "HUILA": {"lat": 2.5, "lon": -75.5, "zoom": 7.5},
+    "LA GUAJIRA": {"lat": 11.5, "lon": -72.5, "zoom": 7.5},
+    "MAGDALENA": {"lat": 10.0, "lon": -74.2, "zoom": 7.5},
+    "META": {"lat": 3.5, "lon": -73.0, "zoom": 7.0},
+    "NARINO": {"lat": 1.5, "lon": -77.5, "zoom": 7.5},
+    "NORTE DE SANTANDER": {"lat": 7.9, "lon": -72.7, "zoom": 7.5},
+    "PUTUMAYO": {"lat": 0.5, "lon": -76.0, "zoom": 7.5},
+    "QUINDIO": {"lat": 4.5, "lon": -75.7, "zoom": 9.5},
+    "RISARALDA": {"lat": 5.2, "lon": -76.0, "zoom": 9.0},
+    "SAN ANDRES": {"lat": 12.5, "lon": -81.7, "zoom": 10.0},
+    "SANTANDER": {"lat": 6.7, "lon": -73.5, "zoom": 7.5},
+    "SUCRE": {"lat": 9.0, "lon": -75.0, "zoom": 8.5},
+    "TOLIMA": {"lat": 3.8, "lon": -75.2, "zoom": 7.5},
+    "VALLE DEL CAUCA": {"lat": 3.8, "lon": -76.5, "zoom": 8.0},
+    "VAUPES": {"lat": 0.5, "lon": -70.5, "zoom": 6.5},
+    "VICHADA": {"lat": 4.5, "lon": -69.5, "zoom": 6.5},
+    "BOGOTA D.C.": {"lat": 4.7, "lon": -74.1, "zoom": 10.0},
+}
+
 
 @st.cache_data(ttl=3600, show_spinner="Cargando datos...")
 def load_data():
@@ -145,18 +182,31 @@ if view == "Mapa Nacional":
 
     st.markdown("---")
 
-    # Estado del drill-down
-    if "depto_drill" not in st.session_state:
-        st.session_state.depto_drill = None
-
     # Selector de departamento para drill-down
+    depto_click = st.selectbox(
+        "Selecciona un departamento para ver el detalle:",
+        ["— Ver mapa nacional —"] + list(df_map.sort_values("tasa_desempleo", ascending=False)["departamento"]),
+        key="drill_selector"
+    )
+
+    # Determinar centro y zoom del mapa
+    if depto_click != "— Ver mapa nacional —" and depto_click in DEPTO_COORDS:
+        coords = DEPTO_COORDS[depto_click]
+        map_center = {"lat": coords["lat"], "lon": coords["lon"]}
+        map_zoom = coords["zoom"]
+        gdf_plot = gdf_map  # Mostrar todos pero centrado en el depto
+    else:
+        map_center = {"lat": 4.5, "lon": -74.0}
+        map_zoom = 5.2
+        gdf_plot = gdf_map
+
     col_map, col_drill = st.columns([2, 1])
 
     with col_map:
         fig = px.choropleth_mapbox(
-            gdf_map,
-            geojson=gdf_map.geometry.__geo_interface__,
-            locations=gdf_map.index,
+            gdf_plot,
+            geojson=gdf_plot.geometry.__geo_interface__,
+            locations=gdf_plot.index,
             color="tasa_desempleo",
             color_continuous_scale="RdYlGn_r",
             range_color=(3, 20),
@@ -172,10 +222,10 @@ if view == "Mapa Nacional":
                 "tgp": "TGP (%)",
             },
             mapbox_style="carto-positron",
-            center={"lat": 4.0, "lon": -74.5},
-            zoom=4.8,
+            center=map_center,
+            zoom=map_zoom,
             opacity=0.75,
-            height=550,
+            height=570,
         )
         fig.update_layout(
             margin={"r": 0, "t": 0, "l": 0, "b": 0},
@@ -183,16 +233,8 @@ if view == "Mapa Nacional":
         )
         st.plotly_chart(fig, use_container_width=True, key="mapa_principal")
 
-        st.caption("Haz clic en un departamento en el selector de abajo para ver el detalle.")
-
     with col_drill:
-        depto_click = st.selectbox(
-            "Ver detalle de departamento:",
-            ["— Selecciona uno —"] + list(df_map.sort_values("tasa_desempleo", ascending=False)["departamento"]),
-            key="drill_selector"
-        )
-
-        if depto_click != "— Selecciona uno —":
+        if depto_click != "— Ver mapa nacional —":
             row = df_map[df_map["departamento"] == depto_click].iloc[0]
 
             st.markdown(f"""
@@ -227,7 +269,6 @@ if view == "Mapa Nacional":
                 fillcolor="rgba(27,158,119,0.1)",
             ))
 
-            # Promedio nacional
             nac_ts = df.groupby(["año", "mes"])["tasa_desempleo"].mean().reset_index()
             nac_ts["fecha"] = pd.to_datetime(
                 nac_ts["año"].astype(str) + "-" + nac_ts["mes"].astype(str) + "-01"
@@ -251,12 +292,13 @@ if view == "Mapa Nacional":
                 title=f"Evolución TD — {depto_click}",
                 xaxis_title="",
                 yaxis_title="TD (%)",
-                height=300,
+                height=320,
                 margin=dict(l=0, r=0, t=30, b=0),
-                legend=dict(orientation="h", y=-0.2),
-                showlegend=True,
+                legend=dict(orientation="h", y=-0.25),
             )
             st.plotly_chart(fig_ts, use_container_width=True)
+        else:
+            st.info("Selecciona un departamento para ver su detalle y hacer zoom en el mapa.")
 
     # Tabla de detalle
     st.markdown("### Detalle por Departamento")
@@ -550,9 +592,9 @@ elif view == "Metodología":
 
     ### Nota sobre los datos
 
-    Los datos presentados en esta versión son sintéticos basados en
-    información pública del DANE. Reflejan patrones y tendencias realistas, pero
-    **no deben usarse para análisis oficiales o toma de decisiones**.
+    Los datos presentados son sintéticos basados en información pública del DANE.
+    Reflejan patrones y tendencias realistas, pero **no deben usarse para análisis
+    oficiales o toma de decisiones**.
 
     Para datos oficiales, consulta:
     - [DANE - Mercado Laboral](https://www.dane.gov.co/index.php/estadisticas-por-tema/mercado-laboral)
