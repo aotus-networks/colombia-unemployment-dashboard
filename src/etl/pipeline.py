@@ -15,7 +15,52 @@ from loguru import logger
 from src.etl.extract_geih import generate_realistic_data
 from src.etl.transform import add_derived_columns, prepare_for_map, validate_data
 from src.utils.logging_config import setup_logging
-from src.utils.paths import DEPARTMENT_PARQUET, DEPARTMENT_GEOJSON, PROCESSED_DIR
+from src.utils.paths import DEPARTMENT_PARQUET, PROCESSED_DIR
+
+
+# URL pública del GeoJSON de departamentos de Colombia
+# Fuente: repositorio público de datos geoespaciales de Colombia
+GEOJSON_URL = (
+    "https://raw.githubusercontent.com/danielcs88/colombia/master/datos/colombia.geo.json"
+)
+
+
+def load_geo_data() -> gpd.GeoDataFrame:
+    """
+    Carga el GeoJSON de departamentos de Colombia.
+
+    Intenta primero desde disco (caché local), si no existe
+    lo descarga desde la URL pública.
+
+    Returns:
+        GeoDataFrame con geometrías departamentales.
+    """
+    from src.utils.paths import DEPARTMENT_GEOJSON, GEO_DIR
+
+    # Intentar desde disco primero
+    if DEPARTMENT_GEOJSON.exists():
+        logger.info(f"Cargando GeoJSON desde disco: {DEPARTMENT_GEOJSON}")
+        return gpd.read_file(DEPARTMENT_GEOJSON)
+
+    # Descargar desde URL pública
+    logger.info(f"Descargando GeoJSON desde: {GEOJSON_URL}")
+    try:
+        geo_df = gpd.read_file(GEOJSON_URL)
+        logger.success(f"GeoJSON descargado: {len(geo_df)} departamentos")
+
+        # Guardar en disco para futuras ejecuciones
+        GEO_DIR.mkdir(parents=True, exist_ok=True)
+        geo_df.to_file(DEPARTMENT_GEOJSON, driver="GeoJSON")
+        logger.info(f"GeoJSON guardado en caché: {DEPARTMENT_GEOJSON}")
+
+        return geo_df
+
+    except Exception as e:
+        logger.error(f"Error descargando GeoJSON: {e}")
+        raise RuntimeError(
+            f"No se pudo cargar el GeoJSON de departamentos. "
+            f"Verifica tu conexión a internet. Error: {e}"
+        )
 
 
 def run_pipeline(
@@ -60,23 +105,16 @@ def run_pipeline(
     logger.info("Paso 3/5: Calculando métricas derivadas...")
     df = add_derived_columns(df)
 
-    # ─── 4. Cargar geometrías y unir ──────────────────────────────────────
+    # ─── 4. Cargar geometrías ─────────────────────────────────────────────
     logger.info("Paso 4/5: Cargando geometrías...")
-
-    if not DEPARTMENT_GEOJSON.exists():
-        raise FileNotFoundError(
-            f"No se encontró {DEPARTMENT_GEOJSON}. "
-            "Ejecuta primero la descarga de datos geoespaciales."
-        )
-
-    geo_df = gpd.read_file(DEPARTMENT_GEOJSON)
+    geo_df = load_geo_data()
     logger.info(f"  Departamentos en GeoJSON: {len(geo_df)}")
 
     # Simplificar geometrías para mejor rendimiento web
     logger.info("  Simplificando geometrías (tol=0.01)...")
     geo_df["geometry"] = geo_df["geometry"].simplify(0.01, preserve_topology=True)
 
-    # Spatial join
+    # ─── 5. Spatial join ──────────────────────────────────────────────────
     logger.info("Paso 5/5: Uniendo datos con geometrías...")
     gdf = prepare_for_map(df, geo_df)
 
@@ -84,16 +122,13 @@ def run_pipeline(
     logger.info("Guardando datos procesados...")
     PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
 
-    # Guardar como Parquet (eficiente, preserva geometrías)
     gdf.to_parquet(DEPARTMENT_PARQUET, compression="zstd")
     logger.success(f"Datos guardados en {DEPARTMENT_PARQUET}")
 
-    # También guardar CSV (sin geometría) para análisis rápido
     csv_path = PROCESSED_DIR / "unemployment_department.csv"
     df.to_csv(csv_path, index=False, encoding="utf-8-sig")
     logger.success(f"CSV guardado en {csv_path}")
 
-    # Resumen
     logger.info("=" * 60)
     logger.info("RESUMEN DEL PIPELINE")
     logger.info(f"  Departamentos: {gdf['departamento'].nunique()}")
