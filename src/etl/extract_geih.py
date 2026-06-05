@@ -144,9 +144,8 @@ def generate_realistic_data(
 
             for month in range(1, 13):
                 # No generar meses futuros
-                if year == 2026 and month > 5:  # Mayo 2026 es el último dato disponible
+                if year == end_year and month > 4:  # Abril 2026 es el último dato disponible
                     continue
-
                 seasonal = SEASONAL_FACTORS[month]
                 noise = rng.normal(0, depto_volatility)
 

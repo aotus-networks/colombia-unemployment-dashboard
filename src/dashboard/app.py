@@ -162,6 +162,7 @@ if view == "Mapa Nacional":
 
     gdf_map = gdf[gdf["año"] == año_seleccionado]
     gdf_map = gdf_map[gdf_map["mes"] == ultimo_mes]
+    gdf_map = gdf_map.reset_index(drop=True)
 
     # KPIs nacionales
     nacional = df_map["tasa_desempleo"].mean()
