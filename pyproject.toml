@@ -9,7 +9,8 @@ description = "Dashboard interactivo de desempleo en Colombia por departamento y
 readme = "README.md"
 license = {text = "MIT"}
 authors = [
-    {name = "Tu Nombre", email = "tu@email.com"}
+    {name = "Saúl Esteban Cuellar"},
+    {name = "Santiago Giraldo Rico"}
 ]
 keywords = ["colombia", "unemployment", "dashboard", "streamlit", "geopandas", "plotly", "dane"]
 classifiers = [
