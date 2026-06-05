@@ -42,41 +42,41 @@ st.markdown("""
 
 # Coordenadas centrales por departamento para zoom
 DEPTO_COORDS = {
-    "AMAZONAS": {"lat": -1.5, "lon": -71.5, "zoom": 6.0},
-    "ANTIOQUIA": {"lat": 7.0, "lon": -75.5, "zoom": 7.0},
-    "ARAUCA": {"lat": 6.5, "lon": -70.7, "zoom": 7.5},
-    "ATLANTICO": {"lat": 10.7, "lon": -74.9, "zoom": 9.0},
-    "BOLIVAR": {"lat": 8.5, "lon": -74.5, "zoom": 7.5},
-    "BOYACA": {"lat": 5.5, "lon": -72.7, "zoom": 7.5},
-    "CALDAS": {"lat": 5.3, "lon": -75.3, "zoom": 8.5},
-    "CAQUETA": {"lat": 0.9, "lon": -74.0, "zoom": 7.0},
-    "CASANARE": {"lat": 5.5, "lon": -71.5, "zoom": 7.5},
-    "CAUCA": {"lat": 2.5, "lon": -76.5, "zoom": 7.5},
-    "CESAR": {"lat": 9.5, "lon": -73.5, "zoom": 7.5},
-    "CHOCO": {"lat": 5.5, "lon": -76.8, "zoom": 7.0},
-    "CORDOBA": {"lat": 8.3, "lon": -75.7, "zoom": 7.5},
-    "CUNDINAMARCA": {"lat": 4.8, "lon": -74.3, "zoom": 8.0},
-    "GUAINIA": {"lat": 2.5, "lon": -68.5, "zoom": 6.5},
-    "GUAVIARE": {"lat": 2.0, "lon": -72.5, "zoom": 7.0},
-    "HUILA": {"lat": 2.5, "lon": -75.5, "zoom": 7.5},
-    "LA GUAJIRA": {"lat": 11.5, "lon": -72.5, "zoom": 7.5},
-    "MAGDALENA": {"lat": 10.0, "lon": -74.2, "zoom": 7.5},
-    "META": {"lat": 3.5, "lon": -73.0, "zoom": 7.0},
-    "NARINO": {"lat": 1.5, "lon": -77.5, "zoom": 7.5},
-    "NORTE DE SANTANDER": {"lat": 7.9, "lon": -72.7, "zoom": 7.5},
-    "PUTUMAYO": {"lat": 0.5, "lon": -76.0, "zoom": 7.5},
-    "QUINDIO": {"lat": 4.5, "lon": -75.7, "zoom": 9.5},
-    "RISARALDA": {"lat": 5.2, "lon": -76.0, "zoom": 9.0},
-    "SAN ANDRES": {"lat": 12.5, "lon": -81.7, "zoom": 10.0},
-    "SANTANDER": {"lat": 6.7, "lon": -73.5, "zoom": 7.5},
-    "SUCRE": {"lat": 9.0, "lon": -75.0, "zoom": 8.5},
-    "TOLIMA": {"lat": 3.8, "lon": -75.2, "zoom": 7.5},
-    "VALLE DEL CAUCA": {"lat": 3.8, "lon": -76.5, "zoom": 8.0},
-    "VAUPES": {"lat": 0.5, "lon": -70.5, "zoom": 6.5},
-    "VICHADA": {"lat": 4.5, "lon": -69.5, "zoom": 6.5},
-    "BOGOTA D.C.": {"lat": 4.7, "lon": -74.1, "zoom": 10.0},
-}
+    "AMAZONAS": {"lat": -1.5, "lon": -71.5, "zoom": 5.0},
+    "ANTIOQUIA": {"lat": 7.0, "lon": -75.5, "zoom": 6.0},
+    "ARAUCA": {"lat": 6.5, "lon": -70.7, "zoom": 6.0},
+    "ATLANTICO": {"lat": 10.7, "lon": -74.9, "zoom": 6.5},
+    "BOLIVAR": {"lat": 8.5, "lon": -74.5, "zoom": 6.0},
+    "BOYACA": {"lat": 5.5, "lon": -72.7, "zoom": 6.0},
+    "CALDAS": {"lat": 5.3, "lon": -75.3, "zoom": 6.5},
+    "CAQUETA": {"lat": 0.9, "lon": -74.0, "zoom": 5.5},
+    "CASANARE": {"lat": 5.5, "lon": -71.5, "zoom": 6.0},
+    "CAUCA": {"lat": 2.5, "lon": -76.5, "zoom": 6.0},
+    "CESAR": {"lat": 9.5, "lon": -73.5, "zoom": 6.0},
+    "CHOCO": {"lat": 5.5, "lon": -76.8, "zoom": 6.0},
+    "CORDOBA": {"lat": 8.3, "lon": -75.7, "zoom": 6.0},
+    "CUNDINAMARCA": {"lat": 4.8, "lon": -74.3, "zoom": 5.8},
+    "GUAINIA": {"lat": 2.5, "lon": -68.5, "zoom": 5.5},
+    "GUAVIARE": {"lat": 2.0, "lon": -72.5, "zoom": 5.5},
+    "HUILA": {"lat": 2.5, "lon": -75.5, "zoom": 6.0},
+    "LA GUAJIRA": {"lat": 11.5, "lon": -72.5, "zoom": 6.0},
+    "MAGDALENA": {"lat": 10.0, "lon": -74.2, "zoom": 6.0},
+    "META": {"lat": 3.5, "lon": -73.0, "zoom": 5.5},
+    "NARINO": {"lat": 1.5, "lon": -77.5, "zoom": 6.0},
+    "NORTE DE SANTANDER": {"lat": 7.9, "lon": -72.7, "zoom": 6.0},
+    "PUTUMAYO": {"lat": 0.5, "lon": -76.0, "zoom": 6.0},
+    "QUINDIO": {"lat": 4.5, "lon": -75.7, "zoom": 7.0},
+    "RISARALDA": {"lat": 5.2, "lon": -76.0, "zoom": 7.0},
+    "SAN ANDRES": {"lat": 12.5, "lon": -81.7, "zoom": 7.0},
+    "SANTANDER": {"lat": 6.7, "lon": -73.5, "zoom": 6.0},
+    "SUCRE": {"lat": 9.0, "lon": -75.0, "zoom": 6.5},
+    "TOLIMA": {"lat": 3.8, "lon": -75.2, "zoom": 6.0},
+    "VALLE DEL CAUCA": {"lat": 3.8, "lon": -76.5, "zoom": 6.5},
+    "VAUPES": {"lat": 0.5, "lon": -70.5, "zoom": 5.5},
+    "VICHADA": {"lat": 4.5, "lon": -69.5, "zoom": 5.5},
+    "BOGOTA D.C.": {"lat": 4.7, "lon": -74.1, "zoom": 5.8},
 
+}
 
 @st.cache_data(ttl=3600, show_spinner="Cargando datos...")
 def load_data():
@@ -196,8 +196,8 @@ if view == "Mapa Nacional":
         map_zoom = coords["zoom"]
         gdf_plot = gdf_map  # Mostrar todos pero centrado en el depto
     else:
-        map_center = {"lat": 4.5, "lon": -74.0}
-        map_zoom = 5.2
+        map_center = {"lat": 4.0, "lon": -74.0}
+        map_zoom = 4.8
         gdf_plot = gdf_map
 
     col_map, col_drill = st.columns([2, 1])
@@ -207,6 +207,7 @@ if view == "Mapa Nacional":
             gdf_plot,
             geojson=gdf_plot.geometry.__geo_interface__,
             locations=gdf_plot.index,
+            custom_data=["departamento"],
             color="tasa_desempleo",
             color_continuous_scale="RdYlGn_r",
             range_color=(3, 20),
@@ -231,6 +232,7 @@ if view == "Mapa Nacional":
             margin={"r": 0, "t": 0, "l": 0, "b": 0},
             coloraxis_colorbar=dict(title="TD (%)", thickness=15, len=0.6),
         )
+        fig.update_traces(hovertemplate="<b>%{hovertext}</b><br>TD: %{customdata[0]}<extra></extra>")
         st.plotly_chart(fig, use_container_width=True, key="mapa_principal")
 
     with col_drill:
@@ -624,6 +626,6 @@ elif view == "Metodología":
 st.markdown("""<div class="footer">
     Dashboard de Desempleo en Colombia |
     Datos: DANE GEIH |
-    Saúl Cuellar & Santiago Giraldo |
+    Saul Cuellar & Santiago Giraldo |
     Desarrollado con Streamlit + Plotly + GeoPandas
 </div>""", unsafe_allow_html=True)
