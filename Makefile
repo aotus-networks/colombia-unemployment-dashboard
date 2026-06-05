@@ -106,4 +106,4 @@ deploy: ## Prepara para deploy (verifica todo)
 	$(MAKE) check
 	@echo "Ejecutando tests..."
 	$(MAKE) test
-	@echo "Listo para deploy 🚀"
+	@echo "Listo para deploy "
