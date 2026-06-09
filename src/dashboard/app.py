@@ -233,7 +233,6 @@ if view == "Mapa Nacional":
             margin={"r": 0, "t": 0, "l": 0, "b": 0},
             coloraxis_colorbar=dict(title="TD (%)", thickness=15, len=0.6),
         )
-        fig.update_traces(hovertemplate="<b>%{hovertext}</b><br>TD: %{customdata[0]}<extra></extra>")
         st.plotly_chart(fig, use_container_width=True, key="mapa_principal")
 
     with col_drill:
