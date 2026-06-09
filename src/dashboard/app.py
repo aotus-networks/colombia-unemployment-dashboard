@@ -155,6 +155,7 @@ with st.sidebar:
 if view == "Mapa Nacional":
     st.title("Mapa de Desempleo en Colombia")
     st.markdown(f"### Tasa de Desempleo por Departamento — {año_seleccionado}")
+    st.caption(f"TD = Tasa de Desempleo mensual (%) · Último dato: {MESES_NAMES[int(ultimo_mes)]} {año_seleccionado} · Fuente: DANE GEIH")
 
     df_year = df[df["año"] == año_seleccionado]
     ultimo_mes = df_year["mes"].max()
@@ -227,21 +228,15 @@ if view == "Mapa Nacional":
             color_continuous_scale="RdYlGn_r",
             range_color=(3, 20),
             hover_name="departamento",
-            hover_data={
-                "tasa_desempleo": ":.1f",
-                "tasa_ocupacion": ":.1f",
-                "tgp": ":.1f",
-            },
-            labels={
-                "tasa_desempleo": "TD (%)",
-                "tasa_ocupacion": "TO (%)",
-                "tgp": "TGP (%)",
-            },
+            hover_data={"tasa_desempleo": ":.1f"},
             mapbox_style="carto-positron",
             center=map_center,
             zoom=map_zoom,
             opacity=0.75,
             height=570,
+        )
+        fig.update_traces(
+            hovertemplate="<b>%{hovertext}</b><br>TD: %{z:.1f}%<extra></extra>"
         )
         fig.update_layout(
             margin={"r": 0, "t": 0, "l": 0, "b": 0},
