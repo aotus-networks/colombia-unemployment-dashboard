@@ -12,4 +12,4 @@ Fuentes:
 """
 
 __version__ = "0.1.0"
-__author__ = "Tu Nombre"
+__author__ = "Saul Esteban Cuellar & Santiago Giraldo Rico"

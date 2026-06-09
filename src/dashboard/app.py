@@ -11,7 +11,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 import geopandas as gpd
-import numpy as np
+
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
@@ -171,8 +171,9 @@ if view == "Mapa Nacional":
 
     col1, col2, col3, col4 = st.columns(4)
     with col1:
-        delta = nacional - nacional_prev
-        st.metric("Tasa de Desempleo Nacional", f"{nacional:.1f}%", delta=f"{delta:+.1f} pp")
+        delta = round(nacional - nacional_prev, 1)
+        st.metric("Tasa de Desempleo Nacional", f"{nacional:.1f}%",
+                  delta=delta, delta_color="inverse")
     with col2:
         st.metric("Tasa Global de Participación", f"{df_map['tgp'].mean():.1f}%")
     with col3:
@@ -182,6 +183,16 @@ if view == "Mapa Nacional":
         st.metric("Mayor Desempleo", f"{max_depto['departamento']}")
 
     st.markdown("---")
+
+    # Capturar clic en el mapa (de la ejecucion anterior)
+    if "mapa_principal" in st.session_state:
+        sel_data = st.session_state["mapa_principal"]
+        if sel_data.get("selection") and sel_data["selection"].get("points"):
+            point = sel_data["selection"]["points"][0]
+            idx = point.get("point_index", -1)
+            if 0 <= idx < len(gdf_map):
+                st.session_state.drill_selector = gdf_map.iloc[idx]["departamento"]
+            sel_data["selection"]["points"] = []
 
     # Selector de departamento para drill-down
     depto_click = st.selectbox(
@@ -208,7 +219,6 @@ if view == "Mapa Nacional":
             gdf_plot,
             geojson=gdf_plot.geometry.__geo_interface__,
             locations=gdf_plot.index,
-            custom_data=["departamento"],
             color="tasa_desempleo",
             color_continuous_scale="RdYlGn_r",
             range_color=(3, 20),
@@ -233,7 +243,7 @@ if view == "Mapa Nacional":
             margin={"r": 0, "t": 0, "l": 0, "b": 0},
             coloraxis_colorbar=dict(title="TD (%)", thickness=15, len=0.6),
         )
-        st.plotly_chart(fig, use_container_width=True, key="mapa_principal")
+        st.plotly_chart(fig, use_container_width=True, key="mapa_principal", on_select="rerun")
 
     with col_drill:
         if depto_click != "— Ver mapa nacional —":
@@ -313,7 +323,7 @@ if view == "Mapa Nacional":
     styled = tabla.style.apply(
         lambda s: [
             "background-color: rgba(227,26,28,0.15); font-weight: bold" if v <= 5
-            else "background-color: rgba(27,158,119,0.15); font-weight: bold" if v >= 28
+            else "background-color: rgba(27,158,119,0.15); font-weight: bold" if v >= 29
             else ""
             for v in s
         ],
@@ -364,7 +374,7 @@ elif view == "Evolución Temporal":
         for d in deptos_sel:
             mask = df_plot["departamento"] == d
             df_plot.loc[mask, "tasa_desempleo"] = (
-                df_plot.loc[mask, "tasa_desempleo"].rolling(3, min_periods=1).mean()
+                df_plot.loc[mask, "tasa_desempleo"].rolling(3, min_periods=1).mean().values
             )
 
     fig = go.Figure()
