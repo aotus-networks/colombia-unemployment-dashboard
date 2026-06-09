@@ -155,10 +155,10 @@ with st.sidebar:
 if view == "Mapa Nacional":
     st.title("Mapa de Desempleo en Colombia")
     st.markdown(f"### Tasa de Desempleo por Departamento — {año_seleccionado}")
-    st.caption(f"TD = Tasa de Desempleo mensual (%) · Último dato: {MESES_NAMES[int(ultimo_mes)]} {año_seleccionado} · Fuente: DANE GEIH")
 
     df_year = df[df["año"] == año_seleccionado]
     ultimo_mes = df_year["mes"].max()
+    st.caption(f"TD = Tasa de Desempleo mensual (%) · Último dato: {MESES_NAMES[int(ultimo_mes)]} {año_seleccionado} · Fuente: DANE GEIH")
     df_map = df_year[df_year["mes"] == ultimo_mes]
 
     gdf_map = gdf[gdf["año"] == año_seleccionado]
