@@ -138,13 +138,6 @@ with st.sidebar:
     if view != "📈 Evolución Temporal":
         año_seleccionado = st.selectbox("Año", AÑOS, index=len(AÑOS) - 1)
 
-    if view not in ["🏆 Ranking Departamentos"]:
-        depto_seleccionado = st.selectbox(
-            "Departamento",
-            ["Todos"] + DEPARTAMENTOS,
-            index=0,
-        )
-
     st.markdown("---")
     st.caption("Datos: DANE - GEIH")
     st.caption("[GitHub](https://github.com/aotus-networks/colombia-unemployment-dashboard)")
