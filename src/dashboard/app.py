@@ -196,7 +196,7 @@ if view == "Mapa Nacional":
 
     # Selector de departamento para drill-down
     depto_click = st.selectbox(
-        "Selecciona un departamento para ver el detalle:",
+        "Departamento (clic en el mapa o selecciona aqui):",
         ["— Ver mapa nacional —"] + list(df_map.sort_values("tasa_desempleo", ascending=False)["departamento"]),
         key="drill_selector"
     )
