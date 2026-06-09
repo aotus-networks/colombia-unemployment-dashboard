@@ -123,11 +123,11 @@ with st.sidebar:
     view = st.radio(
         "Selecciona una vista:",
         [
-            "Mapa Nacional",
-            "Evolución Temporal",
-            "Ranking Departamentos",
-            "Heatmap Estacional",
-            "Metodología",
+            "🗺️ Mapa Nacional",
+            "📈 Evolución Temporal",
+            "🏆 Ranking Departamentos",
+            "🔥 Heatmap Estacional",
+            "📋 Metodología",
         ],
         label_visibility="collapsed",
     )
@@ -135,10 +135,10 @@ with st.sidebar:
     st.markdown("---")
     st.markdown("### Filtros")
 
-    if view != "Evolución Temporal":
+    if view != "📈 Evolución Temporal":
         año_seleccionado = st.selectbox("Año", AÑOS, index=len(AÑOS) - 1)
 
-    if view not in ["Ranking Departamentos"]:
+    if view not in ["🏆 Ranking Departamentos"]:
         depto_seleccionado = st.selectbox(
             "Departamento",
             ["Todos"] + DEPARTAMENTOS,
@@ -152,7 +152,7 @@ with st.sidebar:
 
 
 # ─── Página: MAPA NACIONAL con Drill-down ────────────────────────────────────
-if view == "Mapa Nacional":
+if view == "🗺️ Mapa Nacional":
     st.title("Mapa de Desempleo en Colombia")
     st.markdown(f"### Tasa de Desempleo por Departamento — {año_seleccionado}")
 
@@ -314,11 +314,18 @@ if view == "Mapa Nacional":
 
     # Tabla de detalle
     st.markdown("### Detalle por Departamento")
-    tabla = df_map[["departamento", "tasa_desempleo", "tasa_ocupacion", "tgp", "rank_nacional"]].copy()
+    tabla = df_map[["departamento", "tasa_desempleo", "tasa_ocupacion", "tgp"]].copy()
     tabla = tabla.sort_values("tasa_desempleo", ascending=False)
-    tabla.columns = ["Departamento", "TD (%)", "TO (%)", "TGP (%)", "Ranking"]
+    tabla.columns = ["Departamento", "TD (%)", "TO (%)", "TGP (%)"]
     tabla = tabla.reset_index(drop=True)
-    tabla.index = tabla.index + 1
+    tabla.insert(0, "Ranking", range(1, len(tabla) + 1))
+
+    with st.expander("ℹ️ ¿Qué significa cada indicador?"):
+        st.markdown("""
+        - **TD** = Tasa de Desempleo: % de la fuerza laboral que está desocupada
+        - **TO** = Tasa de Ocupación: % de la población en edad de trabajar que está ocupada
+        - **TGP** = Tasa Global de Participación: % de la población que participa en el mercado laboral
+        """)
 
     styled = tabla.style.apply(
         lambda s: [
@@ -339,7 +346,7 @@ if view == "Mapa Nacional":
 
 
 # ─── Página: EVOLUCIÓN TEMPORAL ──────────────────────────────────────────────
-elif view == "Evolución Temporal":
+elif view == "📈 Evolución Temporal":
     st.title("Evolución Temporal del Desempleo")
 
     defaults = ["ANTIOQUIA", "CHOCO", "NORTE DE SANTANDER", "VALLE DEL CAUCA"]
@@ -462,7 +469,7 @@ elif view == "Evolución Temporal":
 
 
 # ─── Página: RANKING ─────────────────────────────────────────────────────────
-elif view == "Ranking Departamentos":
+elif view == "🏆 Ranking Departamentos":
     st.title("Ranking de Desempleo por Departamento")
 
     año_rank = st.selectbox("Año", AÑOS, index=len(AÑOS) - 1, key="rank_year")
@@ -518,7 +525,7 @@ elif view == "Ranking Departamentos":
 
 
 # ─── Página: HEATMAP ESTACIONAL ──────────────────────────────────────────────
-elif view == "Heatmap Estacional":
+elif view == "🔥 Heatmap Estacional":
     st.title("Patrón Estacional del Desempleo")
 
     depto_heat = st.selectbox("Departamento", DEPARTAMENTOS, key="heat_depto")
@@ -579,7 +586,7 @@ elif view == "Heatmap Estacional":
 
 
 # ─── Página: METODOLOGÍA ─────────────────────────────────────────────────────
-elif view == "Metodología":
+elif view == "📋 Metodología":
     st.title("Metodología y Fuentes")
 
     st.markdown("""
