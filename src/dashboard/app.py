@@ -243,7 +243,8 @@ if view == "Mapa Nacional":
             margin={"r": 0, "t": 0, "l": 0, "b": 0},
             coloraxis_colorbar=dict(title="TD (%)", thickness=15, len=0.6),
         )
-        st.plotly_chart(fig, use_container_width=True, key="mapa_principal", on_select="rerun")
+        st.plotly_chart(fig, use_container_width=True, key="mapa_principal", on_select="rerun",
+                        config={"scrollZoom": True})
 
     with col_drill:
         if depto_click != "— Ver mapa nacional —":
