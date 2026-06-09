@@ -192,8 +192,11 @@ if view == "Mapa Nacional":
             if points:
                 idx = points[0].get("point_index", -1)
                 if 0 <= idx < len(gdf_map):
-                    st.session_state.drill_selector = gdf_map.iloc[idx]["departamento"]
-            st.session_state["mapa_principal"] = {}
+                    clicked = gdf_map.iloc[idx]["departamento"]
+                    last = st.session_state.get("_last_clicked_depto")
+                    if clicked != last:
+                        st.session_state.drill_selector = clicked
+                        st.session_state["_last_clicked_depto"] = clicked
 
     # Selector de departamento para drill-down
     depto_click = st.selectbox(
