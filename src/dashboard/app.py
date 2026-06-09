@@ -187,12 +187,13 @@ if view == "Mapa Nacional":
     # Capturar clic en el mapa (de la ejecucion anterior)
     if "mapa_principal" in st.session_state:
         sel_data = st.session_state["mapa_principal"]
-        if sel_data.get("selection") and sel_data["selection"].get("points"):
-            point = sel_data["selection"]["points"][0]
-            idx = point.get("point_index", -1)
-            if 0 <= idx < len(gdf_map):
-                st.session_state.drill_selector = gdf_map.iloc[idx]["departamento"]
-            sel_data["selection"]["points"] = []
+        if isinstance(sel_data, dict) and sel_data.get("selection"):
+            points = sel_data["selection"].get("points", [])
+            if points:
+                idx = points[0].get("point_index", -1)
+                if 0 <= idx < len(gdf_map):
+                    st.session_state.drill_selector = gdf_map.iloc[idx]["departamento"]
+            st.session_state["mapa_principal"] = {}
 
     # Selector de departamento para drill-down
     depto_click = st.selectbox(
